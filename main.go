@@ -43,6 +43,27 @@ func createProduct(w http.ResponseWriter, r *http.Request) {
 	sendData(w, newProduct, http.StatusCreated)
 
 }
+func updateProduct(w http.ResponseWriter, r *http.Request) {
+	var updatedProduct Product
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&updatedProduct)
+	if err != nil {
+		http.Error(w, "Error decoding JSON", http.StatusBadRequest)
+		return
+	}
+	for _, product := range productList {
+		if product.ID == updatedProduct.ID {
+			product.Title = updatedProduct.Title
+			product.Description = updatedProduct.Description
+			product.Price = updatedProduct.Price
+			product.Image = updatedProduct.Image
+			sendData(w, product, http.StatusOK)
+			return
+		}
+
+	}
+
+}
 
 func main() {
 
@@ -51,8 +72,9 @@ func main() {
 		w.Write([]byte("Hello, World!"))
 	})
 
-	mux.Handle("GET /getProducts", corsMiddleware(http.HandlerFunc(getProducts)))
+	mux.Handle("GET /getProducts", http.HandlerFunc(getProducts))
 	mux.Handle("POST /createProduct", http.HandlerFunc(createProduct))
+	mux.Handle("PATCH /updateProduct", http.HandlerFunc(updateProduct))
 	handler := corsMiddleware(mux)
 	fmt.Println("Server started on port 3000")
 	err := http.ListenAndServe(":3000", handler)
