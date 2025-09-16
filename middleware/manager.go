@@ -22,11 +22,18 @@ func (mngr *Manager) With(next http.Handler, middlewares ...Middleware) http.Han
 
 		next = middleware(next)
 	}
+
+	return next
+
+}
+
+//middleware.Logger, middleware.CorsMiddleware
+//cors( logger(mux))
+func (mngr *Manager) WrapMux(handler http.Handler) http.Handler {
+	next := handler
 	for _, globalMiddleware := range mngr.globalMiddlewares {
 		next = globalMiddleware(next)
 
 	}
-
 	return next
-
 }
