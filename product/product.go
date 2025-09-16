@@ -8,8 +8,3 @@ type Product struct {
 	Image       string
 }
 
-type DeleteRequest struct {
-	ID int `json:"id"`
-}
-
-

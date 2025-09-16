@@ -30,17 +30,18 @@ func init() {
 }
 
 func StoreProduct(p product.Product) {
+	p.ID = len(productList) + 1
 	productList = append(productList, p)
 }
 
 func List() []product.Product {
 	return productList
 }
-func GetProductByID(id int) product.Product {
-	var searchedProduct product.Product
+func GetProductByID(id int) *product.Product {
+	var searchedProduct *product.Product
 	for _, product := range productList {
 		if product.ID == id {
-			searchedProduct = product
+			searchedProduct = &product
 			break
 
 		}
@@ -49,14 +50,14 @@ func GetProductByID(id int) product.Product {
 	return searchedProduct
 }
 
-func UpdateProduct(updatedProduct product.Product) bool {
+func UpdateProduct(updatedProduct product.Product) product.Product {
 	for i, p := range productList {
 		if p.ID == updatedProduct.ID {
 			productList[i] = updatedProduct
-			return true
+			return updatedProduct
 		}
 	}
-	return false
+	return product.Product{}
 }
 
 func DeleteProduct(id int) bool {

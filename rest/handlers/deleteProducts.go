@@ -1,26 +1,22 @@
 package handlers
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/Likhon22/ecom/database"
-	"github.com/Likhon22/ecom/product"
 	"github.com/Likhon22/ecom/utils"
 )
 
 func DeleteProduct(w http.ResponseWriter, r *http.Request) {
-	var id product.DeleteRequest
-	decoder := json.NewDecoder(r.Body)
-	fmt.Println(r.Body)
-	err := decoder.Decode(&id)
+
+	productId := r.PathValue("id")
+	pId, err := strconv.Atoi(productId)
 	if err != nil {
-		http.Error(w, "Error decoding JSON", http.StatusBadRequest)
-		return
+		http.Error(w, "Invalid product ID", http.StatusBadRequest)
 	}
 
-	isDeleted := database.DeleteProduct(id.ID)
+	isDeleted := database.DeleteProduct(pId)
 	if !isDeleted {
 		http.Error(w, "Product not found", http.StatusNotFound)
 		return

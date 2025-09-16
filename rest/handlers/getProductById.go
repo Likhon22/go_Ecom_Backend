@@ -17,6 +17,11 @@ func GetProductByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	searchedProduct := database.GetProductByID(id)
+	if searchedProduct == nil {
+		http.Error(w, "Product not found", http.StatusNotFound)
+		return
+
+	}
 
 	utils.SendData(w, searchedProduct, http.StatusOK)
 
