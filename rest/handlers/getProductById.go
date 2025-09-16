@@ -1,11 +1,10 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
-	"github.com/Likhon22/ecom/product"
+	"github.com/Likhon22/ecom/database"
 	"github.com/Likhon22/ecom/utils"
 )
 
@@ -17,19 +16,8 @@ func GetProductByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var searchedProduct product.Product
-	fmt.Println(product.ProductList)
-	for _, v := range product.ProductList {
-		if v.ID == id {
-			searchedProduct = v
+	searchedProduct := database.GetProductByID(id)
 
-		}
-
-	}
-	if searchedProduct.ID == 0 {
-		http.Error(w, "Product not found", http.StatusNotFound)
-		return
-	}
 	utils.SendData(w, searchedProduct, http.StatusOK)
 
 }

@@ -2,6 +2,8 @@ package database
 
 import "github.com/Likhon22/ecom/product"
 
+var productList []product.Product
+
 func init() {
 	product1 := product.Product{
 		ID:          1,
@@ -24,6 +26,45 @@ func init() {
 		Price:       300,
 		Image:       "Image 3",
 	}
-	product.ProductList = append(product.ProductList, product1, product2, product3)
+	productList = append(productList, product1, product2, product3)
+}
 
+func StoreProduct(p product.Product) {
+	productList = append(productList, p)
+}
+
+func List() []product.Product {
+	return productList
+}
+func GetProductByID(id int) product.Product {
+	var searchedProduct product.Product
+	for _, product := range productList {
+		if product.ID == id {
+			searchedProduct = product
+			break
+
+		}
+
+	}
+	return searchedProduct
+}
+
+func UpdateProduct(updatedProduct product.Product) bool {
+	for i, p := range productList {
+		if p.ID == updatedProduct.ID {
+			productList[i] = updatedProduct
+			return true
+		}
+	}
+	return false
+}
+
+func DeleteProduct(id int) bool {
+	for i, p := range productList {
+		if p.ID == id {
+			productList = append(productList[:i], productList[i+1:]...)
+			return true
+		}
+	}
+	return false
 }

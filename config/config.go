@@ -18,8 +18,8 @@ type Config struct {
 func loadConfig() {
 	err := godotenv.Load()
 	if err != nil {
-		fmt.Println("Error loading .env file")
-		return
+		fmt.Println("Error loading .env file", err)
+		os.Exit(1)
 	}
 	config = Config{
 		Version:     os.Getenv("VERSION"),

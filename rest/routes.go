@@ -1,10 +1,10 @@
-package cmd
+package rest
 
 import (
 	"net/http"
 
-	"github.com/Likhon22/ecom/handlers"
-	"github.com/Likhon22/ecom/middleware"
+	"github.com/Likhon22/ecom/rest/handlers"
+	"github.com/Likhon22/ecom/rest/middleware"
 )
 
 func initRoutes(mux *http.ServeMux, mngr *middleware.Manager) {

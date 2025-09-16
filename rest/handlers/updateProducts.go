@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/Likhon22/ecom/database"
 	"github.com/Likhon22/ecom/product"
 	"github.com/Likhon22/ecom/utils"
 )
@@ -16,16 +17,11 @@ func UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error decoding JSON", http.StatusBadRequest)
 		return
 	}
-	for _, product := range product.ProductList {
-		if product.ID == updatedProduct.ID {
-			product.Title = updatedProduct.Title
-			product.Description = updatedProduct.Description
-			product.Price = updatedProduct.Price
-			product.Image = updatedProduct.Image
-			utils.SendData(w, product, http.StatusOK)
-			return
-		}
-
+	updatedStatus := database.UpdateProduct(updatedProduct)
+	if !updatedStatus {
+		http.Error(w, "Product not found", http.StatusNotFound)
+		return
 	}
+	utils.SendData(w, updatedProduct, http.StatusOK)
 
 }

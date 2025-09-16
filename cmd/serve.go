@@ -1,29 +1,13 @@
 package cmd
 
 import (
-	"fmt"
-	"net/http"
-
-	"github.com/Likhon22/ecom/middleware"
+	"github.com/Likhon22/ecom/config"
+	"github.com/Likhon22/ecom/rest"
 )
 
 func Serve() {
-	mux := http.NewServeMux()
-	mngr := middleware.NewManager()
-	mngr.Use(middleware.Logger, middleware.CorsMiddleware)
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello, World!"))
-	})
-	initRoutes(mux, mngr)
 
-	fmt.Println("Server started on port 3000")
+	cnf := config.GetConfig()
 
-
-	
-	wrappedMux := mngr.WrapMux(mux)
-	err := http.ListenAndServe(":3000", wrappedMux)
-	if err != nil {
-
-		fmt.Println("Error starting server:", err)
-	}
+	rest.StartServer(&cnf)
 }

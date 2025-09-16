@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/Likhon22/ecom/database"
 	"github.com/Likhon22/ecom/product"
 	"github.com/Likhon22/ecom/utils"
 )
@@ -17,8 +18,7 @@ func CreateProduct(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error decoding JSON", http.StatusBadRequest)
 		return
 	}
-	newProduct.ID = len(product.ProductList) + 1
-	product.ProductList = append(product.ProductList, newProduct)
+	database.StoreProduct(newProduct)
 	utils.SendData(w, newProduct, http.StatusCreated)
 
 }
