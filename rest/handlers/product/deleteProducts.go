@@ -1,4 +1,4 @@
-package handlers
+package product
 
 import (
 	"net/http"
@@ -8,7 +8,7 @@ import (
 	"github.com/Likhon22/ecom/utils"
 )
 
-func DeleteProduct(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 
 	productId := r.PathValue("id")
 	pId, err := strconv.Atoi(productId)

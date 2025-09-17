@@ -16,12 +16,6 @@ type Config struct {
 	SecretKey   string
 }
 
-/*
-VERSION=1.0.0
-SERVICE_NAME=Ecom
-HTTP_PORT=8080
-SECRET_KEY=super_secret_key
-*/
 func loadConfig() {
 	err := godotenv.Load()
 	if err != nil {

@@ -1,4 +1,4 @@
-package handlers
+package product
 
 import (
 	"net/http"
@@ -8,7 +8,7 @@ import (
 	"github.com/Likhon22/ecom/utils"
 )
 
-func GetProductByID(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetProductByID(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.Atoi(r.PathValue("id"))
 	if err != nil {

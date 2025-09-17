@@ -1,4 +1,4 @@
-package handlers
+package user
 
 import (
 	"encoding/json"
@@ -8,7 +8,7 @@ import (
 	"github.com/Likhon22/ecom/utils"
 )
 
-func CreateUser(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var newUser database.User
 
 	decoder := json.NewDecoder(r.Body)

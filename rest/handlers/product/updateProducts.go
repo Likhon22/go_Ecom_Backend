@@ -1,4 +1,4 @@
-package handlers
+package product
 
 import (
 	"encoding/json"
@@ -10,7 +10,7 @@ import (
 	"github.com/Likhon22/ecom/utils"
 )
 
-func UpdateProduct(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	var updatedProduct product.Product
 
 	updatedProduct.ID, _ = strconv.Atoi(r.PathValue("id"))

@@ -1,4 +1,4 @@
-package handlers
+package product
 
 import (
 	"encoding/json"
@@ -11,7 +11,7 @@ import (
 	"github.com/Likhon22/ecom/utils"
 )
 
-func CreateProduct(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 
 	header := r.Header.Get("Authorization")
 	if header == "" {
