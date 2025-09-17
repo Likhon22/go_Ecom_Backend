@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/Likhon22/ecom/config"
 	"github.com/Likhon22/ecom/database"
 	"github.com/Likhon22/ecom/utils"
 )
@@ -27,6 +28,18 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 		return
 	}
-	utils.SendData(w, user, http.StatusOK)
+	accessToken, err := utils.CreateJwt(config.GetConfig().SecretKey, utils.Payload{
+		Sub:         user.ID,
+		Email:       user.Email,
+		FirstName:   user.FirstName,
+		LastName:    user.LastName,
+		IsShopOwner: user.IsShopOwner,
+	})
+	if err != nil {
+		http.Error(w, "Internal server Error", http.StatusInternalServerError)
+		return
+	}
+
+	utils.SendData(w, accessToken, http.StatusOK)
 
 }
