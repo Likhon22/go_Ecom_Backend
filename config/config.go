@@ -7,7 +7,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var config Config
+var config *Config
 
 type Config struct {
 	Version     string
@@ -26,7 +26,7 @@ func loadConfig() {
 	serviceName := os.Getenv("SERVICE_NAME")
 	httpPort := os.Getenv("HTTP_PORT")
 	secretKey := os.Getenv("SECRET_KEY")
-	config = Config{
+	config = &Config{
 		Version:     version,
 		ServiceName: serviceName,
 		HttpPort:    httpPort,
@@ -43,12 +43,9 @@ func loadConfig() {
 	}
 
 }
-func GetConfig() Config {
-	loadConfig()
-	if config.HttpPort == "" || config.ServiceName == "" || config.Version == "" {
-		fmt.Println("Missing required environment variables")
-		os.Exit(1)
-
+func GetConfig() *Config {
+	if config == nil {
+		loadConfig()
 	}
 	return config
 }

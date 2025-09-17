@@ -7,6 +7,7 @@ import (
 
 	"github.com/Likhon22/ecom/config"
 	"github.com/Likhon22/ecom/rest/handlers/product"
+	"github.com/Likhon22/ecom/rest/handlers/review"
 	"github.com/Likhon22/ecom/rest/handlers/user"
 	"github.com/Likhon22/ecom/rest/middleware"
 )
@@ -14,16 +15,20 @@ import (
 type Server struct {
 	productHandler *product.Handler
 	userHandler    *user.Handler
+	reviewHandler  *review.Handler
+	cnf            *config.Config
 }
 
-func NewServer(productHandler *product.Handler, userHandler *user.Handler) *Server {
+func NewServer(productHandler *product.Handler, userHandler *user.Handler, reviewHandler *review.Handler, cnf *config.Config) *Server {
 	return &Server{
-		productHandler: product.NewHandler(),
-		userHandler:    user.NewHandler(),
+		productHandler: productHandler,
+		userHandler:    userHandler,
+		reviewHandler:  reviewHandler,
+		cnf:            cnf,
 	}
 }
 
-func (server *Server) StartServer(cnf *config.Config) {
+func (server *Server) StartServer() {
 	mux := http.NewServeMux()
 	mngr := middleware.NewManager()
 	mngr.Use(middleware.Logger, middleware.CorsMiddleware)
@@ -32,9 +37,10 @@ func (server *Server) StartServer(cnf *config.Config) {
 	})
 	server.productHandler.ProductRoutes(mux, mngr)
 	server.userHandler.UserRoutes(mux, mngr)
+	server.reviewHandler.ReviewRoutes(mux, mngr)
 
 	wrappedMux := mngr.WrapMux(mux)
-	addr := ":" + string(cnf.HttpPort)
+	addr := ":" + string(server.cnf.HttpPort)
 
 	fmt.Println("Server started on port", addr)
 	err := http.ListenAndServe(addr, wrappedMux)

@@ -6,11 +6,9 @@ import (
 	"encoding/base64"
 	"net/http"
 	"strings"
-
-	"github.com/Likhon22/ecom/config"
 )
 
-func Authenticate(next http.Handler) http.Handler {
+func (middlewares *Middlewares) Authenticate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		header := r.Header.Get("Authorization")
@@ -39,7 +37,7 @@ func Authenticate(next http.Handler) http.Handler {
 		}
 		message := jwtHeader + "." + jwtPayload
 		byteArrMessage := []byte(message)
-		expectedSignature := hmac.New(sha256.New, []byte(config.GetConfig().SecretKey))
+		expectedSignature := hmac.New(sha256.New, []byte(middlewares.config.SecretKey))
 		expectedSignature.Write(byteArrMessage)
 		hash := expectedSignature.Sum(nil)
 		encodedHash := base64UrlEncode(hash)
