@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Likhon22/ecom/database"
 	"github.com/Likhon22/ecom/utils"
 )
 
@@ -16,7 +15,11 @@ func (h *Handler) GetProductByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	searchedProduct := database.GetProductByID(id)
+	searchedProduct, err := h.productRepo.GetByID(id)
+	if err != nil {
+		http.Error(w, "Error fetching product", http.StatusInternalServerError)
+		return
+	}
 	if searchedProduct == nil {
 		http.Error(w, "Product not found", http.StatusNotFound)
 		return

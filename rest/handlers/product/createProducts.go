@@ -6,10 +6,16 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Likhon22/ecom/database"
-	"github.com/Likhon22/ecom/product"
+	"github.com/Likhon22/ecom/repo"
 	"github.com/Likhon22/ecom/utils"
 )
+
+type ReqCreateProduct struct {
+	Title       string
+	Description string
+	Price       float64
+	Image       string
+}
 
 func (h *Handler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 
@@ -27,14 +33,24 @@ func (h *Handler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	accessToken := headerArr[1]
 	log.Println(accessToken)
 
-	var newProduct product.Product
+	var newProduct ReqCreateProduct
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&newProduct)
 	if err != nil {
 		http.Error(w, "Error decoding JSON", http.StatusBadRequest)
 		return
 	}
-	database.StoreProduct(newProduct)
+	newProduct, err = h.productRepo.Create(repo.Product{
+		Title:       newProduct.Title,
+		Description: newProduct.Description,
+		Price:       newProduct.Price,
+		Image:       newProduct.Image,
+	})
+	if err != nil {
+		http.Error(w, "Error creating product", http.StatusInternalServerError)
+		return
+	}
+
 	utils.SendData(w, newProduct, http.StatusCreated)
 
 }

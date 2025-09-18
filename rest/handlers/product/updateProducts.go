@@ -5,22 +5,29 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Likhon22/ecom/database"
-	"github.com/Likhon22/ecom/product"
 	"github.com/Likhon22/ecom/utils"
 )
 
-func (h *Handler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
-	var updatedProduct product.Product
+type ReqUpdateProduct struct {
+	ID          int
+	Title       string
+	Description string
+	Price       float64
+	Image       string
+}
 
-	updatedProduct.ID, _ = strconv.Atoi(r.PathValue("id"))
+func (h *Handler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
+	var updatedProduct *ReqUpdateProduct
+
+	pId, _ := strconv.Atoi(r.PathValue("id"))
+	updatedProduct.ID = pId
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&updatedProduct)
 	if err != nil {
 		http.Error(w, "Error decoding JSON", http.StatusBadRequest)
 		return
 	}
-	updatedProduct = database.UpdateProduct(updatedProduct)
+	updatedProduct, err = h.productRepo.Update(updatedProduct)
 
 	utils.SendData(w, updatedProduct, http.StatusOK)
 
