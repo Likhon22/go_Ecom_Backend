@@ -40,7 +40,7 @@ func (h *Handler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error decoding JSON", http.StatusBadRequest)
 		return
 	}
-	newProduct, err = h.productRepo.Create(repo.Product{
+	created, err := h.productRepo.Create(repo.Product{
 		Title:       newProduct.Title,
 		Description: newProduct.Description,
 		Price:       newProduct.Price,
@@ -51,6 +51,6 @@ func (h *Handler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.SendData(w, newProduct, http.StatusCreated)
+	utils.SendData(w, created, http.StatusCreated)
 
 }

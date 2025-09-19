@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Likhon22/ecom/repo"
 	"github.com/Likhon22/ecom/utils"
 )
 
@@ -27,8 +28,18 @@ func (h *Handler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error decoding JSON", http.StatusBadRequest)
 		return
 	}
-	updatedProduct, err = h.productRepo.Update(updatedProduct)
+	created, err := h.productRepo.Update(repo.Product{
+		ID:          updatedProduct.ID,
+		Title:       updatedProduct.Title,
+		Description: updatedProduct.Description,
+		Price:       updatedProduct.Price,
+		Image:       updatedProduct.Image,
+	})
+	if err != nil {
+		http.Error(w, "Error updating product", http.StatusInternalServerError)
+		return
+	}
 
-	utils.SendData(w, updatedProduct, http.StatusOK)
+	utils.SendData(w, created, http.StatusOK)
 
 }

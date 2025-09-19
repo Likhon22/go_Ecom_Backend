@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/Likhon22/ecom/config"
-	"github.com/Likhon22/ecom/database"
 	"github.com/Likhon22/ecom/utils"
 )
 
@@ -23,7 +22,12 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error decoding JSON", http.StatusBadRequest)
 		return
 	}
-	user := database.Login(reqLoginUser.Email, reqLoginUser.Password)
+	user, err := h.UserRepo.Login(reqLoginUser.Email, reqLoginUser.Password)
+	if err != nil {
+		http.Error(w, "Internal server Error", http.StatusInternalServerError)
+		return
+
+	}
 	if user == nil {
 		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 		return

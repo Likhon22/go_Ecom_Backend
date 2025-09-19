@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/Likhon22/ecom/config"
+	"github.com/Likhon22/ecom/repo"
 	"github.com/Likhon22/ecom/rest"
 	"github.com/Likhon22/ecom/rest/handlers/product"
 	"github.com/Likhon22/ecom/rest/handlers/review"
@@ -13,8 +14,10 @@ func Serve() {
 
 	cnf := config.GetConfig()
 	middleware := middleware.NewMiddlewares(cnf)
-	productHandler := product.NewHandler(middleware)
-	userHandler := user.NewHandler()
+	userRepo := repo.NewUserRepo()
+	productRepo := repo.NewProductRepo()
+	productHandler := product.NewHandler(middleware, productRepo)
+	userHandler := user.NewHandler(userRepo)
 	reviewHandler := review.NewHandler()
 	server := rest.NewServer(productHandler, userHandler, reviewHandler, cnf)
 	server.StartServer()
