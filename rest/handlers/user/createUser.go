@@ -30,6 +30,7 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		FirstName:   newUser.FirstName,
 		LastName:    newUser.LastName,
 		Email:       newUser.Email,
+		Password:    newUser.Password,
 		IsShopOwner: newUser.IsShopOwner,
 	})
 	if err != nil {
