@@ -1,5 +1,11 @@
 package repo
 
+import (
+	"database/sql"
+
+	"github.com/jmoiron/sqlx"
+)
+
 type User struct {
 	ID          int    `json:"id"`
 	FirstName   string `json:"first_name"`
@@ -9,61 +15,87 @@ type User struct {
 	IsShopOwner bool   `json:"is_shop_owner"`
 }
 
-
 type UserRepo interface {
 	CreateUser(usr User) (*User, error)
-	Login(email, password string) (*User, error)
+	// Login(email, password string) (*User, error)
 	ListUsers() ([]*User, error)
 	GetUserByEmail(email string) (*User, error)
-	UpdateUser(email string, updatedUser User) (*User, error)
+	// UpdateUser(email string, updatedUser User) (*User, error)
 }
 
 type userRepo struct {
-	users []*User
+	db *sqlx.DB
 }
 
-func NewUserRepo() UserRepo {
-	repo := &userRepo{}
+func NewUserRepo(db *sqlx.DB) UserRepo {
+	repo := &userRepo{
+		db: db,
+	}
 	return repo
 }
 
 func (usr *userRepo) CreateUser(u User) (*User, error) {
-	if u.ID != 0 {
-		return &u, nil
+	query := `
+	INSERT INTO users (first_name, last_name, email, password, is_shop_owner)
+	VALUES (:first_name, :last_name, :email, :password, :is_shop_owner)
+	RETURNING id
+	`
+	rows, err := usr.db.NamedQuery(query, u)
+	if err != nil {
+		return nil, err
 	}
-	u.ID = len(usr.users) + 1
-	usr.users = append(usr.users, &u)
+	defer rows.Close()
+	for rows.Next() {
+		rows.Scan(&u.ID)
+	}
+
 	return &u, nil
 
 }
 func (usr *userRepo) ListUsers() ([]*User, error) {
-	return usr.users, nil
+	var users []*User
+	query := `SELECT id, first_name, last_name, email, password, is_shop_owner FROM users`
+	err := usr.db.Select(&users, query)
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
+
 }
 func (usr *userRepo) GetUserByEmail(email string) (*User, error) {
-	for _, user := range usr.users {
-		if user.Email == email {
-			return user, nil
+	var user User
+	query := `
+	SELECT id, first_name, last_name, email, password, is_shop_owner
+	FROM users
+	WHERE email = $1
+	LIMIT 1
+	`
+	err := usr.db.Get(&user, query, email)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
 		}
-	}
-	return nil, nil
+		return nil, err
 
-}
-func (usr *userRepo) UpdateUser(email string, updatedUser User) (*User, error) {
-	for i, user := range usr.users {
-		if user.Email == email {
-			usr.users[i] = &updatedUser
-			return &updatedUser, nil
-		}
 	}
-	return nil, nil
+	return &user, nil
 }
-func (usr *userRepo) Login(email, password string) (*User, error) {
-	for _, user := range usr.users {
-		if user.Email == email && user.Password == password {
-			return user, nil
 
-		}
-	}
-	return nil, nil
+// func (usr *userRepo) UpdateUser(email string, updatedUser User) (*User, error) {
+// 	for i, user := range usr.users {
+// 		if user.Email == email {
+// 			usr.users[i] = &updatedUser
+// 			return &updatedUser, nil
+// 		}
+// 	}
+// 	return nil, nil
+// }
+// func (usr *userRepo) Login(email, password string) (*User, error) {
+// 	for _, user := range usr.users {
+// 		if user.Email == email && user.Password == password {
+// 			return user, nil
 
-}
+// 		}
+// 	}
+// 	return nil, nil
+// }

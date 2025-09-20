@@ -7,7 +7,7 @@ import (
 
 	"github.com/Likhon22/ecom/config"
 	"github.com/Likhon22/ecom/rest/handlers/product"
-	"github.com/Likhon22/ecom/rest/handlers/review"
+
 	"github.com/Likhon22/ecom/rest/handlers/user"
 	"github.com/Likhon22/ecom/rest/middleware"
 )
@@ -15,16 +15,16 @@ import (
 type Server struct {
 	productHandler *product.Handler
 	userHandler    *user.Handler
-	reviewHandler  *review.Handler
-	cnf            *config.Config
+
+	cnf *config.Config
 }
 
-func NewServer(productHandler *product.Handler, userHandler *user.Handler, reviewHandler *review.Handler, cnf *config.Config) *Server {
+func NewServer(productHandler *product.Handler, userHandler *user.Handler, cnf *config.Config) *Server {
 	return &Server{
 		productHandler: productHandler,
 		userHandler:    userHandler,
-		reviewHandler:  reviewHandler,
-		cnf:            cnf,
+
+		cnf: cnf,
 	}
 }
 
@@ -37,7 +37,6 @@ func (server *Server) StartServer() {
 	})
 	server.productHandler.ProductRoutes(mux, mngr)
 	server.userHandler.UserRoutes(mux, mngr)
-	server.reviewHandler.ReviewRoutes(mux, mngr)
 
 	wrappedMux := mngr.WrapMux(mux)
 	addr := ":" + string(server.cnf.HttpPort)

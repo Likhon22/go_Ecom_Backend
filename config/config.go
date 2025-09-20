@@ -14,6 +14,7 @@ type Config struct {
 	ServiceName string
 	HttpPort    string
 	SecretKey   string
+	DBUrl       string
 }
 
 func loadConfig() {
@@ -26,11 +27,18 @@ func loadConfig() {
 	serviceName := os.Getenv("SERVICE_NAME")
 	httpPort := os.Getenv("HTTP_PORT")
 	secretKey := os.Getenv("SECRET_KEY")
+	dbUrl := os.Getenv("DB_URL")
 	config = &Config{
 		Version:     version,
 		ServiceName: serviceName,
 		HttpPort:    httpPort,
 		SecretKey:   secretKey,
+		DBUrl:       dbUrl,
+	}
+	if config.DBUrl == "" {
+		fmt.Println("Missing required environment variables: DB_URL")
+		os.Exit(1)
+
 	}
 	if config.HttpPort == "" || config.ServiceName == "" || config.Version == "" {
 		fmt.Println("Missing required environment variables", config.HttpPort, config.ServiceName, config.Version)
