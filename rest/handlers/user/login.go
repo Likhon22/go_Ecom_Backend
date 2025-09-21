@@ -5,16 +5,12 @@ import (
 	"net/http"
 
 	"github.com/Likhon22/ecom/config"
+	"github.com/Likhon22/ecom/domain"
 	"github.com/Likhon22/ecom/utils"
 )
 
-type ReqLogin struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
-	var reqLoginUser ReqLogin
+	var reqLoginUser domain.ReqLogin
 
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&reqLoginUser)
@@ -22,7 +18,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error decoding JSON", http.StatusBadRequest)
 		return
 	}
-	user, err := h.UserRepo.Login(reqLoginUser.Email, reqLoginUser.Password)
+	user, err := h.service.Login(reqLoginUser.Email, reqLoginUser.Password)
 	if err != nil {
 		http.Error(w, "Internal server Error", http.StatusInternalServerError)
 		return

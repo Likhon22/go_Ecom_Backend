@@ -2,31 +2,18 @@ package repo
 
 import (
 	"fmt"
-	"time"
 
+	"github.com/Likhon22/ecom/domain"
+	"github.com/Likhon22/ecom/product"
 	"github.com/jmoiron/sqlx"
 )
 
-type Product struct {
-	ID          int       `json:"id" db:"id"`
-	Title       string    `json:"title" db:"title"`
-	Description string    `json:"description" db:"description"`
-	Price       float64   `json:"price" db:"price"`
-	Image       string    `json:"image" db:"image"`
-	CreatedAt   time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at" db:"updated_at"`
+type productRepo struct {
+	db *sqlx.DB
 }
 
 type ProductRepo interface {
-	GetAll() ([]*Product, error)
-	GetByID(id int) (*Product, error)
-	Create(p Product) (*Product, error)
-	Update(p Product) (*Product, error)
-	Delete(id int) (bool, error)
-}
-
-type productRepo struct {
-	db *sqlx.DB
+	product.ProductService
 }
 
 func NewProductRepo(db *sqlx.DB) ProductRepo {
@@ -37,9 +24,9 @@ func NewProductRepo(db *sqlx.DB) ProductRepo {
 	return repo
 }
 
-func (pr *productRepo) GetAll() ([]*Product, error) {
+func (pr *productRepo) GetAll() ([]*domain.Product, error) {
 
-	var products []*Product
+	var products []*domain.Product
 	query := `SELECT id, title, description, price, image FROM products`
 	err := pr.db.Select(&products, query)
 	if err != nil {
@@ -48,8 +35,8 @@ func (pr *productRepo) GetAll() ([]*Product, error) {
 	return products, nil
 
 }
-func (pr *productRepo) GetByID(id int) (*Product, error) {
-	var searchedProduct *Product
+func (pr *productRepo) GetByID(id int) (*domain.Product, error) {
+	var searchedProduct *domain.Product
 	query := `SELECT id, title, description, price, image FROM products WHERE id=$1`
 	err := pr.db.Get(&searchedProduct, query, id)
 	if err != nil {
@@ -59,7 +46,7 @@ func (pr *productRepo) GetByID(id int) (*Product, error) {
 
 	return searchedProduct, nil
 }
-func (pr *productRepo) Create(p Product) (*Product, error) {
+func (pr *productRepo) Create(p domain.Product) (*domain.Product, error) {
 	query := `
 	INSERT INTO products (title, description, price, image)
 	VALUES (:title, :description, :price, :image)
@@ -76,7 +63,7 @@ func (pr *productRepo) Create(p Product) (*Product, error) {
 	}
 	return &p, nil
 }
-func (pr *productRepo) Update(p Product) (*Product, error) {
+func (pr *productRepo) Update(p domain.Product) (*domain.Product, error) {
 	query := `
 		UPDATE products 
 		SET title=$1, description=$2, price=$3, image=$4, updated_at=NOW() 

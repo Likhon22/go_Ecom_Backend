@@ -1,18 +1,17 @@
 package product
 
 import (
-	"github.com/Likhon22/ecom/repo"
 	"github.com/Likhon22/ecom/rest/middleware"
 )
 
 type Handler struct {
 	middlewares *middleware.Middlewares
-	productRepo repo.ProductRepo
+	service     ProductService
 }
 
-func NewHandler(middlewares *middleware.Middlewares, repo repo.ProductRepo) *Handler {
+func NewHandler(middlewares *middleware.Middlewares, ProductService ProductService) *Handler {
 	return &Handler{
 		middlewares: middlewares,
-		productRepo: repo,
+		service:     ProductService,
 	}
 }

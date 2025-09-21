@@ -1,14 +1,18 @@
 package user
 
-import "github.com/Likhon22/ecom/repo"
+import (
+	"github.com/Likhon22/ecom/config"
+)
 
 type Handler struct {
-	UserRepo repo.UserRepo
+	cnf     *config.Config
+	service Service
 }
 
-func NewHandler(repo repo.UserRepo) *Handler {
+func NewHandler(cnf *config.Config, service Service) *Handler {
 	return &Handler{
-		UserRepo: repo,
+		cnf:     cnf,
+		service: service,
 	}
 
 }

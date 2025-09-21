@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Likhon22/ecom/repo"
+	"github.com/Likhon22/ecom/domain"
 	"github.com/Likhon22/ecom/utils"
 )
 
@@ -40,7 +40,7 @@ func (h *Handler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error decoding JSON", http.StatusBadRequest)
 		return
 	}
-	created, err := h.productRepo.Create(repo.Product{
+	created, err := h.service.Create(domain.Product{
 		Title:       newProduct.Title,
 		Description: newProduct.Description,
 		Price:       newProduct.Price,

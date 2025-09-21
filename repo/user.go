@@ -4,28 +4,16 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/Likhon22/ecom/domain"
+	"github.com/Likhon22/ecom/user"
 	"github.com/jmoiron/sqlx"
 )
 
-type User struct {
-	ID          int    `json:"id" db:"id"`
-	FirstName   string `json:"first_name" db:"first_name"`
-	LastName    string `json:"last_name" db:"last_name"`
-	Email       string `json:"email" db:"email"`
-	Password    string `json:"password" db:"password"`
-	IsShopOwner bool   `json:"is_shop_owner" db:"is_shop_owner"`
-}
-
-type UserRepo interface {
-	CreateUser(usr User) (*User, error)
-	Login(email, password string) (*User, error)
-	ListUsers() ([]*User, error)
-	GetUserByEmail(email string) (*User, error)
-	UpdateUser(email string, updatedUser User) (*User, error)
-}
-
 type userRepo struct {
 	db *sqlx.DB
+}
+type UserRepo interface {
+	user.UserRepo
 }
 
 func NewUserRepo(db *sqlx.DB) UserRepo {
@@ -35,7 +23,7 @@ func NewUserRepo(db *sqlx.DB) UserRepo {
 	return repo
 }
 
-func (usr *userRepo) CreateUser(u User) (*User, error) {
+func (usr *userRepo) CreateUser(u domain.User) (*domain.User, error) {
 	query := `
 	INSERT INTO users (first_name, last_name, email, password, is_shop_owner)
 	VALUES (:first_name, :last_name, :email, :password, :is_shop_owner)
@@ -54,8 +42,8 @@ func (usr *userRepo) CreateUser(u User) (*User, error) {
 	return &u, nil
 
 }
-func (usr *userRepo) ListUsers() ([]*User, error) {
-	var users []*User
+func (usr *userRepo) ListUsers() ([]*domain.User, error) {
+	var users []*domain.User
 	query := `SELECT id, first_name, last_name, email, password, is_shop_owner FROM users`
 	err := usr.db.Select(&users, query)
 	if err != nil {
@@ -64,8 +52,8 @@ func (usr *userRepo) ListUsers() ([]*User, error) {
 	return users, nil
 
 }
-func (usr *userRepo) GetUserByEmail(email string) (*User, error) {
-	var user User
+func (usr *userRepo) GetUserByEmail(email string) (*domain.User, error) {
+	var user domain.User
 	query := `
 	SELECT id, first_name, last_name, email, password, is_shop_owner
 	FROM users
@@ -83,7 +71,7 @@ func (usr *userRepo) GetUserByEmail(email string) (*User, error) {
 	return &user, nil
 }
 
-func (usr *userRepo) UpdateUser(email string, updatedUser User) (*User, error) {
+func (usr *userRepo) UpdateUser(email string, updatedUser domain.User) (*domain.User, error) {
 	query := `
 		UPDATE users
 		SET first_name=$1, last_name=$2, updated_at=NOW()
@@ -107,8 +95,8 @@ func (usr *userRepo) UpdateUser(email string, updatedUser User) (*User, error) {
 
 	return &updatedUser, nil
 }
-func (usr *userRepo) Login(email, password string) (*User, error) {
-	var user User
+func (usr *userRepo) Login(email, password string) (*domain.User, error) {
+	var user domain.User
 	query := `
 		SELECT id, first_name, last_name, email, password, is_shop_owner
 		FROM users

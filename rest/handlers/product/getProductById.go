@@ -15,7 +15,7 @@ func (h *Handler) GetProductByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	searchedProduct, err := h.productRepo.GetByID(id)
+	searchedProduct, err := h.service.GetByID(id)
 	if err != nil {
 		http.Error(w, "Error fetching product", http.StatusInternalServerError)
 		return

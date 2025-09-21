@@ -15,7 +15,7 @@ func (h *Handler) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid product ID", http.StatusBadRequest)
 	}
 
-	isDeleted, err := h.productRepo.Delete(pId)
+	isDeleted, err := h.service.Delete(pId)
 	if err != nil {
 		http.Error(w, "Error deleting product", http.StatusInternalServerError)
 		return
@@ -25,7 +25,7 @@ func (h *Handler) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	productList, err := h.productRepo.GetAll()
+	productList, err := h.service.GetAll()
 	if err != nil {
 		http.Error(w, "Error fetching product list", http.StatusInternalServerError)
 		return

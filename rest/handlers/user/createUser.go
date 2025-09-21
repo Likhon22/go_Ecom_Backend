@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/Likhon22/ecom/repo"
+	"github.com/Likhon22/ecom/domain"
 	"github.com/Likhon22/ecom/utils"
 )
 
@@ -26,7 +26,7 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error decoding JSON", http.StatusBadRequest)
 		return
 	}
-	created, err := h.UserRepo.CreateUser(repo.User{
+	created, err := h.service.CreateUser(domain.User{
 		FirstName:   newUser.FirstName,
 		LastName:    newUser.LastName,
 		Email:       newUser.Email,
