@@ -39,8 +39,8 @@ func Serve() {
 
 	userService := user.NewService(userRepo)
 	productService := product.NewProductService(productRepo)
-	productHandler := productHandler.NewHandler(middleware, productRepo)
-	userHandler := userHandler.NewHandler(cnf, userService)
+	productHandler := productHandler.NewHandler(middleware, productService)
+	userHandler := userHandler.NewHandler(middleware, userService)
 
 	server := rest.NewServer(productHandler, userHandler, cnf)
 	server.StartServer()

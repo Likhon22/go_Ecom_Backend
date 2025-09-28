@@ -25,10 +25,9 @@ func (h *Handler) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	productList, err := h.service.GetAll()
 	if err != nil {
 		http.Error(w, "Error fetching product list", http.StatusInternalServerError)
 		return
 	}
-	utils.SendData(w, productList, http.StatusOK)
+	utils.SendData(w, "Deleted the product", http.StatusOK)
 }

@@ -24,11 +24,12 @@ func NewProductRepo(db *sqlx.DB) ProductRepo {
 	return repo
 }
 
-func (pr *productRepo) GetAll() ([]*domain.Product, error) {
-
+func (pr *productRepo) GetAll(page, limit int64) ([]*domain.Product, error) {
+	offset := (page - 1) * limit
+	fmt.Println("Limit:", limit, "Offset:", offset)
 	var products []*domain.Product
-	query := `SELECT id, title, description, price, image FROM products`
-	err := pr.db.Select(&products, query)
+	query := `SELECT id, title, description, price, image FROM products LIMIT $1 OFFSET $2`
+	err := pr.db.Select(&products, query, limit, offset)
 	if err != nil {
 		return nil, err
 	}

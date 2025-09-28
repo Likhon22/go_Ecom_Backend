@@ -9,7 +9,7 @@ type ProductService interface {
 	productHandler.ProductService
 }
 type ProductRepo interface {
-	GetAll() ([]*domain.Product, error)
+	GetAll(page, limit int64) ([]*domain.Product, error)
 	GetByID(id int) (*domain.Product, error)
 	Create(p domain.Product) (*domain.Product, error)
 	Update(p domain.Product) (*domain.Product, error)

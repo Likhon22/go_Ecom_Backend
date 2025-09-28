@@ -1,18 +1,17 @@
 package user
 
 import (
-	"github.com/Likhon22/ecom/config"
+	"github.com/Likhon22/ecom/rest/middleware"
 )
 
 type Handler struct {
-	cnf     *config.Config
-	service Service
+	middleware *middleware.Middlewares
+	service    Service
 }
 
-func NewHandler(cnf *config.Config, service Service) *Handler {
+func NewHandler(middlewares *middleware.Middlewares, service Service) *Handler {
 	return &Handler{
-		cnf:     cnf,
-		service: service,
+		middleware: middlewares,
+		service:    service,
 	}
-
 }

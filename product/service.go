@@ -10,8 +10,8 @@ func NewProductService(repo ProductRepo) ProductService {
 	return &productService{repo: repo}
 }
 
-func (ps *productService) GetAll() ([]*domain.Product, error) {
-	proudcts, err := ps.repo.GetAll()
+func (ps *productService) GetAll(page, limit int64) ([]*domain.Product, error) {
+	proudcts, err := ps.repo.GetAll(page, limit)
 	if err != nil {
 		return nil, err
 	}
