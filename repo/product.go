@@ -100,3 +100,13 @@ func (pr *productRepo) Delete(id int) (bool, error) {
 	}
 	return rowsAffected > 0, nil
 }
+
+func (pr *productRepo) Count() (int64, error) {
+	var count int64
+	query := `SELECT COUNT(*) FROM products`
+	err := pr.db.Get(&count, query)
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}

@@ -3,11 +3,14 @@ package product
 import (
 	"net/http"
 	"strconv"
+	"sync"
 
 	"github.com/Likhon22/ecom/utils"
 )
 
 func (h *Handler) GetProducts(w http.ResponseWriter, r *http.Request) {
+	var count int64
+	var wg sync.WaitGroup
 	reqQuery := r.URL.Query()
 	page, err := strconv.ParseInt(reqQuery.Get("page"), 10, 32)
 	if err != nil {
@@ -23,7 +26,17 @@ func (h *Handler) GetProducts(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error fetching products", http.StatusInternalServerError)
 		return
 	}
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		count, err = h.service.Count()
+		if err != nil {
+			http.Error(w, "Error fetching products", http.StatusInternalServerError)
+			return
+		}
+	}()
+	wg.Wait()
 
-	utils.SendData(w, products, http.StatusOK)
+	utils.SendPage(w, page, products, count, limit)
 
 }

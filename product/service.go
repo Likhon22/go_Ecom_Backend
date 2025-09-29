@@ -47,3 +47,11 @@ func (ps *productService) Delete(id int) (bool, error) {
 	}
 	return isDeleted, nil
 }
+
+func (ps *productService) Count() (int64, error) {
+	count, err := ps.repo.Count()
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}

@@ -8,4 +8,5 @@ type ProductService interface {
 	Create(p domain.Product) (*domain.Product, error)
 	Update(p domain.Product) (*domain.Product, error)
 	Delete(id int) (bool, error)
+	Count() (int64, error)
 }
